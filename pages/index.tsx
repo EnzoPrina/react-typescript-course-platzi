@@ -1,8 +1,32 @@
 import Head from 'next/head'
+import {  useState } from 'react';
+import { MouseEventHandler } from 'react';
+import { RandomFox } from '@/components/RandomFox'
+import type { NextPage } from 'next';
 
+const random = () => Math.floor(Math.random() * 123) + 1;
 
+// generate simple unique id
+const generateId = () => Math.random().toString(36).substr(2,9)
 
-export default function Home() {
+type ImageItems = {id: string; url: string}
+
+const Home: NextPage = () => {
+  const [images, setImages] = useState<Array<ImageItems>>([]);
+
+  const addNewFox: MouseEventHandler<HTMLButtonElement>  = (event) => {
+
+    const newImageItem: ImageItems = {
+    id: generateId(),
+    url: `https://randomfox.ca/images/${random()}.jpg`
+  }
+
+  setImages([
+    ...images,
+    newImageItem
+  ])
+  }
+
   return (
     <>
       <Head>
@@ -11,11 +35,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main >
-      <h1 className="text-3xl font-bold underline">
-      Hello Platzi!
-    </h1>
+      <h1 className="text-3xl font-bold underline">Hello Platzi!</h1>
+      <button onClick={addNewFox}>Add new fox</button>
+    {images.map(({id, url}) => (
+      <div key={id} className='p-4'>
+        <RandomFox image={url}/>
+      </div>
+      
+    ))}
+   
       </main>
       <footer></footer>
     </>
   )
 }
+
+
+export default Home;
